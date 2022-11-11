@@ -23,10 +23,10 @@ public:
         return name;
     }
     void addCourse(string course){
-
+        courses.push_back(course);
     }
     //overload
-    void addCouse(vector<string> courseV){
+    void addCourse(vector<string> courseV){
 
     }
 };
@@ -61,9 +61,38 @@ public:
     }
 
 };
-
 int main() {
-    int test = 0;
-    cout << sizeof(test) << endl;
-    return 0;
+
+	//course list reading
+	vector<course> courselist;
+	ifstream MyReadFile("CourseFile.txt");
+	string my_str;
+    
+	//read each line in file
+	while (getline(MyReadFile, my_str)) {
+        //vector to contain items from each listing in text file
+		vector<string> result;
+        
+		//stream to get string of file
+		stringstream s_stream(my_str);
+		while (s_stream.good()) {
+			string substr;
+            
+			//split commas and remove spaces at front of delimited strings
+			getline(s_stream, substr, ',');
+			substr.erase(0, substr.find_first_not_of(' '));
+            //send items to a vector
+			result.push_back(substr);
+		}
+		//make tuple of short cast marks
+		tuple<short, short, short, short> temptuple;
+		temptuple = make_tuple((short) stoi(result[2]), (short) stoi(result[3]),
+				(short) stoi(result[4]), (short) stoi(result[5]));
+		//create new course from data obtained, add to list
+		course latest(result[1], stoi(result[0]), temptuple);
+		courselist.push_back(latest);
+	}
+
+	MyReadFile.close();
+	return 0;
 }
